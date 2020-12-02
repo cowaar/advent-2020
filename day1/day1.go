@@ -11,11 +11,10 @@ func main() {
 	//testData := []string{"1721", "979", "366", "299", "675", "1456"}
 	//fmt.Println(tripleSum2020(testData))
 
-	file, _ := ioutil.ReadFile("input.txt")
+	file, _ := ioutil.ReadFile("Day1/input.txt")
 	fileString := string(file)
 	fileArray := strings.Split(fileString, "\n")
 	fmt.Println(tripleSum2020(fileArray))
-
 }
 
 func doubleSum2020(nums []string) (int, int) {
