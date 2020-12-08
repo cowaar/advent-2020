@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	file, _ := ioutil.ReadFile("day7/input.txt")
+	file, _ := ioutil.ReadFile("day7/test.txt")
 	fileString := string(file)
 	fileArray := strings.Split(fileString, "\n")
 	// have to use a map as a set for quick lookup
@@ -16,33 +16,36 @@ func main() {
 	for _, line := range fileArray {
 		parseRule1(line, m)
 	}
-
 	result:= 0
 	for k,_ := range m{
-		if searchForGolden(m,k){
-			result++
-		}
+		searchForGolden(m,k,&result)
 	}
 
 	fmt.Println(result)
+	fmt.Println(len(m))
 }
-func searchForGolden(m map[string]map[string]bool, s string ) bool{
+
+
+func searchForGolden(m map[string]map[string]bool, s string , res *int){
 	contents := m[s]
-	if _,ok := contents["shiny gold bag"]; ok{
-		return true
-	}else{ for k,_ := range contents{
-		return searchForGolden(m,k)
+	for k,_ := range contents {
+		if k == "shiny gold bag"{
+			fmt.Println(k)
+			*res++
+
+			break
+
+		}else {
+			searchForGolden(m,k,res)
 		}
 	}
 
-	return false
 }
 
 func parseRule1(s string, m map[string]map[string]bool ) map[string]map[string]bool{
 	findContain:=regexp.MustCompile("s contain")
 	splitRule := findContain.Split(s,2)
 	currentBag := splitRule[0]
-
 	if splitRule[1] == " no other bags."{
 		m[currentBag] = map[string]bool{}
 		return m
