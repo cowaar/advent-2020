@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -13,10 +15,13 @@ func main() {
 	fileString := string(file)
 	fileArray := strings.Split(fileString, "\n")
 	//fmt.Println(xmasDecoder1(fileArray, 25))
+	start := time.Now()
 	a1,a2 := addToTarget(fileArray, 26134589)
+	elapsed := time.Since(start)
+	log.Printf("func took %s", elapsed)
 	fmt.Println(a1,a2,a1+a2)
-}
 
+}
 func addToTarget(nums []string, tar int) (int,int) {
 
 	for i, _ := range nums {
