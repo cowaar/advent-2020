@@ -92,11 +92,7 @@ func validatePwMap2(m map[string]string) bool {
 		}
 	}
 
-	if ticks == 7 {
-		return true
-	} else {
-		return false
-	}
+	return ticks==7
 }
 
 func checkRange(s string, min int, max int) bool {
