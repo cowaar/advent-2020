@@ -42,15 +42,8 @@ func recursiveSolution(ints []int, i int, m *map[int]int) int {
 	if val,ok := (*m)[i];ok{
 		return val
 	}
-	next3:= []int{i+1,i+2,i+3}
-	if i== len(ints)-2{
-		next3= next3[:1]
-	}
-	if i == len(ints)-3{
-		next3= next3[:2]
-	}
 	ans := 0
-	for _,x := range next3{
+	for _,x := range makeRange(i+1,len(ints)-1){
 		if ints[x]-ints[i]<=3{
 			ans += recursiveSolution(ints,x,m)
 		}
@@ -59,7 +52,13 @@ func recursiveSolution(ints []int, i int, m *map[int]int) int {
 	(*m)[i]=ans
 	return ans
 }
-
+func makeRange(min, max int) []int {
+	a := make([]int, max-min+1)
+	for i := range a {
+		a[i] = min + i
+	}
+	return a
+}
 
 
 // Part 1
