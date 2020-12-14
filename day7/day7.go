@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/twmb/algoimpl/go/graph"
 	"io/ioutil"
 	"regexp"
 	"strings"
@@ -12,52 +13,54 @@ func main() {
 	fileString := string(file)
 	fileArray := strings.Split(fileString, "\n")
 	// have to use a map as a set for quick lookup
-	m := make(map[string]map[string]bool)
-	for _, line := range fileArray {
-		parseRule1(line, m)
-	}
-	result:= 0
-	for k,_ := range m{
-		searchForGolden(m,k,&result)
-	}
-
-	fmt.Println(result)
-	fmt.Println(len(m))
+	run(fileArray)
 }
+func run(ss []string){
+	g:= graph.New(graph.Directed)
+	bags := make(map[string]graph.Node, 0)
+	for _, line := range ss {
+		bagStrings := parseRule1(line)
+		outerBag := bagStrings[0]
+		innerBags := bagStrings[1:]
+		bags[outerBag] = g.MakeNode()
+		for i := 0; i < len(innerBags); i++ {
+			if innerBags[0] == "no other bag" {
+				break
+			}
+			bags[innerBags[i]] = g.MakeNode()
+			g.MakeEdge( bags[innerBags[i]],bags[outerBag])
 
-
-func searchForGolden(m map[string]map[string]bool, s string , res *int){
-	contents := m[s]
-	for k,_ := range contents {
-		if k == "shiny gold bag"{
-			fmt.Println(k)
-			*res++
-
-			break
-
-		}else {
-			searchForGolden(m,k,res)
 		}
+
 	}
+	// Make references back to the string values
+	for key, node := range bags {
+		*node.Value = key
+	}
+	goldSet := make(map[string]bool)
+	for _,node := range bags {
+		searchBag(node,goldSet,bags,g)
+	}
+
 
 }
 
-func parseRule1(s string, m map[string]map[string]bool ) map[string]map[string]bool{
+func searchBag(node graph.Node, goldSet map[string]bool, bags map[string]graph.Node, g *graph.Graph){
+
+	//fmt.Println(*node.Value)
+	nbhrs:= g.Neighbors(node)
+	fmt.Println(nbhrs)
+}
+
+func parseRule1(s string)[]string{
 	findContain:=regexp.MustCompile("s contain")
 	splitRule := findContain.Split(s,2)
-	currentBag := splitRule[0]
 	if splitRule[1] == " no other bags."{
-		m[currentBag] = map[string]bool{}
-		return m
+
 	}
 	findNums := regexp.MustCompile(`[0-9]\s|,|\.`)
 	noNums := findNums.ReplaceAllString(splitRule[1],"")
 	findBags := regexp.MustCompile(`(\w+\s\w+ bag)`)
 	final := findBags.FindAllString(noNums,-1)
-	set := make(map[string]bool)
-	for _,row := range final{
-		set[row]=true
-	}
-	m[currentBag] = set
-	return m
+	return append([]string{splitRule[0]},final...)
 }
