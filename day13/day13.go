@@ -18,6 +18,7 @@ func main() {
 }
 
 // part 2
+// did in conjunction with my brother
 // each number has arithmetic sequence, with common difference [id] with first term being -[position in list]
 // this allows us to find one value where they all line up
 //
