@@ -9,7 +9,10 @@ import (
 )
 
 func main() {
-	file, _ := ioutil.ReadFile("day18/input.txt")
+	file, e := ioutil.ReadFile("day18/input.txt")
+	if e != nil {
+		panic(e)
+	}
 	fileString := string(file)
 	fileString = strings.Replace(fileString, " ", "", -1)
 	fileArray := strings.Split(fileString, "\n")
